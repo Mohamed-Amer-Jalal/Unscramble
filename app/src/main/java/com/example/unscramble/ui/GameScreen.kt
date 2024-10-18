@@ -17,11 +17,14 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -41,11 +44,22 @@ import com.example.unscramble.R
 import com.example.unscramble.ui.theme.UnscrambleTheme
 
 @Composable
-fun GameScreen() {
+fun GameScreenApp() {
+    Scaffold(
+        topBar = { GameTopAppBar() },
+    ) { innerPadding ->
+        GameScreen(
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+}
+
+@Composable
+fun GameScreen(modifier: Modifier = Modifier) {
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .safeDrawingPadding()
@@ -53,11 +67,6 @@ fun GameScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Text(
-            text = stringResource(R.string.app_name),
-            style = typography.titleLarge,
-        )
         GameLayout(
             modifier = Modifier
                 .fillMaxWidth()
@@ -93,14 +102,14 @@ fun GameScreen() {
             }
         }
 
-        GameStatus(score = 0, modifier = Modifier.padding(20.dp))
+        GameStatus(score = 0)
     }
 }
 
 @Composable
-fun GameStatus(score: Int, modifier: Modifier = Modifier) {
+fun GameStatus(score: Int) {
     Card(
-        modifier = modifier
+        modifier = Modifier.padding(20.dp)
     ) {
         Text(
             text = stringResource(R.string.score, score),
@@ -173,7 +182,7 @@ fun GameLayout(modifier: Modifier = Modifier) {
 private fun FinalScoreDialog(
     score: Int,
     onPlayAgain: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val activity = (LocalContext.current as Activity)
 
@@ -203,10 +212,26 @@ private fun FinalScoreDialog(
     )
 }
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreenPreview() {
-    UnscrambleTheme {
-        GameScreen()
+fun GameTopAppBar() {
+    CenterAlignedTopAppBar(
+        title = { Text(text = stringResource(R.string.app_name), style = typography.titleLarge) },
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun GameScreenDarkPreview() {
+    UnscrambleTheme(darkTheme = true) {
+        GameScreenApp()
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun GameScreenLightPreview() {
+    UnscrambleTheme(darkTheme = false) {
+        GameScreenApp()
     }
 }
