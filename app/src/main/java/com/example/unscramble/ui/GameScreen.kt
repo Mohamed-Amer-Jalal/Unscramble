@@ -72,6 +72,14 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        if (gameUiState.isGameOver) {
+            FinalScoreDialog(
+                score = gameUiState.score,
+                onPlayAgain = { gameViewModel.resetGame() }
+            )
+        }
+
         GameLayout(
             currentScrambledWord = gameUiState.currentScrambledWord,
             onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
@@ -212,22 +220,14 @@ private fun FinalScoreDialog(
     val activity = (LocalContext.current as Activity)
 
     AlertDialog(
-        onDismissRequest = {
-            // Dismiss the dialog when the user clicks outside the dialog or on the back
-            // button. If you want to disable that functionality, simply use an empty
-            // onCloseRequest.
-        },
+        onDismissRequest = { },
         title = { Text(text = stringResource(R.string.congratulations)) },
         text = { Text(text = stringResource(R.string.you_scored, score)) },
         modifier = modifier,
         dismissButton = {
             TextButton(
-                onClick = {
-                    activity.finish()
-                }
-            ) {
-                Text(text = stringResource(R.string.exit))
-            }
+                onClick = { activity.finish() }
+            ) { Text(text = stringResource(R.string.exit)) }
         },
         confirmButton = {
             TextButton(onClick = onPlayAgain) {
