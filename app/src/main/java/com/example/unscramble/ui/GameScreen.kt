@@ -61,18 +61,15 @@ fun GameScreenApp() {
 fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = viewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
 
-    val mediumPadding = dimensionResource(R.dimen.padding_medium)
-
     Column(
         modifier = modifier
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .safeDrawingPadding()
-            .padding(mediumPadding),
+            .padding(dimensionResource(R.dimen.padding_medium)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         if (gameUiState.isGameOver) {
             FinalScoreDialog(
                 score = gameUiState.score,
@@ -90,13 +87,13 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(mediumPadding)
+                .padding(dimensionResource(R.dimen.padding_medium))
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(mediumPadding),
-            verticalArrangement = Arrangement.spacedBy(mediumPadding),
+                .padding(dimensionResource(R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -148,8 +145,6 @@ fun GameLayout(
     isGuessWrong: Boolean,
     wordCount: Int,
 ) {
-    val mediumPadding = dimensionResource(R.dimen.padding_medium)
-
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
@@ -157,7 +152,7 @@ fun GameLayout(
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(mediumPadding)
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         ) {
             Text(
                 modifier = Modifier
