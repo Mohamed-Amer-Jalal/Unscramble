@@ -59,7 +59,7 @@ fun GameScreenApp() {
 
 @Composable
 fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = viewModel()) {
-    val gameUiState by gameViewModel.uiState.collectAsState()
+    val gameUiState by gameViewModel.uiState
 
     Column(
         modifier = modifier
