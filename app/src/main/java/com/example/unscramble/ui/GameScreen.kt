@@ -50,9 +50,7 @@ fun GameScreenApp() {
     Scaffold(
         topBar = { GameTopAppBar() },
     ) { innerPadding ->
-        GameScreen(
-            modifier = Modifier.padding(innerPadding)
-        )
+        GameScreen(modifier = Modifier.padding(innerPadding))
     }
 }
 
@@ -70,10 +68,7 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (gameUiState.isGameOver) {
-            FinalScoreDialog(
-                score = gameUiState.score,
-                onPlayAgain = { gameViewModel.resetGame() }
-            )
+            FinalScoreDialog(score = gameUiState.score, onPlayAgain = { gameViewModel.resetGame() })
         }
 
         GameLayout(
@@ -98,8 +93,7 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { gameViewModel.checkUserGuess() }
-            ) {
+                onClick = { gameViewModel.checkUserGuess() }) {
                 Text(
                     text = stringResource(R.string.submit),
                     fontSize = 16.sp
@@ -109,12 +103,7 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
             OutlinedButton(
                 onClick = { gameViewModel.skipWord() },
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.skip),
-                    fontSize = 16.sp
-                )
-            }
+            ) { Text(text = stringResource(R.string.skip), fontSize = 16.sp) }
         }
 
         GameStatus(score = gameUiState.score)
@@ -123,9 +112,7 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
 
 @Composable
 fun GameStatus(score: Int) {
-    Card(
-        modifier = Modifier.padding(20.dp)
-    ) {
+    Card(modifier = Modifier.padding(20.dp)) {
         Text(
             text = stringResource(R.string.score, score),
             style = typography.headlineMedium,
@@ -144,10 +131,7 @@ fun GameLayout(
     isGuessWrong: Boolean,
     wordCount: Int,
 ) {
-    Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-    ) {
+    Card(modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)) {
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -187,56 +171,39 @@ fun GameLayout(
                 ),
                 onValueChange = onUserGuessChanged,
                 label = {
-                    if (isGuessWrong) Text(stringResource(R.string.wrong_guess))
-                    else Text(stringResource(R.string.enter_your_word))
+                    when (isGuessWrong) {
+                        true -> Text(stringResource(R.string.wrong_guess))
+                        false -> Text(stringResource(R.string.enter_your_word))
+                    }
                 },
                 isError = isGuessWrong,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onKeyboardDone() }
-                )
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { onKeyboardDone() })
             )
         }
     }
 }
 
-/*
- * Creates and shows an AlertDialog with final score.
- */
 @Composable
-private fun FinalScoreDialog(
-    score: Int,
-    onPlayAgain: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun FinalScoreDialog(score: Int, onPlayAgain: () -> Unit, modifier: Modifier = Modifier) {
     val activity = (LocalContext.current as Activity)
 
-    AlertDialog(
-        onDismissRequest = { },
+    AlertDialog(onDismissRequest = { },
         title = { Text(text = stringResource(R.string.congratulations)) },
         text = { Text(text = stringResource(R.string.you_scored, score)) },
         modifier = modifier,
-        dismissButton = {
-            TextButton(
-                onClick = { activity.finish() }
-            ) { Text(text = stringResource(R.string.exit)) }
-        },
-        confirmButton = {
-            TextButton(onClick = onPlayAgain) {
-                Text(text = stringResource(R.string.play_again))
-            }
-        }
-    )
+        dismissButton = { TextButton(onClick = { activity.finish() }) { Text(text = stringResource(R.string.exit)) } },
+        confirmButton = { TextButton(onClick = onPlayAgain) { Text(text = stringResource(R.string.play_again)) } })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameTopAppBar() {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(R.string.app_name), style = typography.titleLarge) },
-    )
+    CenterAlignedTopAppBar(title = {
+        Text(
+            text = stringResource(R.string.app_name), style = typography.titleLarge
+        )
+    })
 }
 
 @Preview(showBackground = true, showSystemUi = true)
