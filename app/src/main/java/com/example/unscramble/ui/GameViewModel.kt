@@ -7,14 +7,10 @@ import androidx.lifecycle.ViewModel
 import com.example.unscramble.data.MAX_NO_OF_WORDS
 import com.example.unscramble.data.SCORE_INCREASE
 import com.example.unscramble.data.allWords
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class GameViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(GameUiState())
-    val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
+    var uiState: GameUiState by mutableStateOf(GameUiState())
+        private set
 
     private lateinit var currentWord: String
 
@@ -29,11 +25,12 @@ class GameViewModel : ViewModel() {
 
     private fun pickRandomWordAndShuffle(): String {
         currentWord = allWords.random()
-        if (usedWords.contains(currentWord)) {
-            return pickRandomWordAndShuffle()
-        } else {
-            usedWords.add(currentWord)
-            return shuffleCurrentWord(currentWord)
+        return when (usedWords.contains(currentWord)) {
+            true -> pickRandomWordAndShuffle()
+            false -> {
+                usedWords.add(currentWord)
+                shuffleCurrentWord(currentWord)
+            }
         }
     }
 
@@ -48,35 +45,31 @@ class GameViewModel : ViewModel() {
 
     fun checkUserGuess() {
         when (userGuess.equals(currentWord, ignoreCase = true)) {
-            true -> updateGameState(_uiState.value.score.plus(SCORE_INCREASE))
-            false -> _uiState.update { currentState -> currentState.copy(isGuessedWordWrong = true) }
+            true -> updateGameState(uiState.score.plus(SCORE_INCREASE))
+            false -> uiState.copy(isGuessedWordWrong = true)
         }
         updateUserGuess("")
     }
 
     private fun updateGameState(updatedScore: Int) {
         when (usedWords.size < MAX_NO_OF_WORDS) {
-            true -> _uiState.update { currentState ->
-                currentState.copy(
-                    isGuessedWordWrong = false,
-                    score = updatedScore,
-                    isGameOver = true
-                )
-            }
+            true -> uiState.copy(
+                isGuessedWordWrong = false,
+                score = updatedScore,
+                isGameOver = true
+            )
 
-            false -> _uiState.update { currentState ->
-                currentState.copy(
-                    isGuessedWordWrong = false,
-                    currentScrambledWord = pickRandomWordAndShuffle(),
-                    score = updatedScore,
-                    currentWordCount = currentState.currentWordCount.inc()
-                )
-            }
+            false -> uiState.copy(
+                isGuessedWordWrong = false,
+                currentScrambledWord = pickRandomWordAndShuffle(),
+                score = updatedScore,
+                currentWordCount = uiState.currentWordCount.inc()
+            )
         }
     }
 
     fun skipWord() {
-        updateGameState(_uiState.value.score)
+        updateGameState(uiState.score)
         updateUserGuess("")
     }
 
@@ -86,6 +79,6 @@ class GameViewModel : ViewModel() {
 
     fun resetGame() {
         usedWords.clear()
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+        uiState = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
     }
 }

@@ -1,6 +1,7 @@
 package com.example.unscramble.ui
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,11 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -56,7 +55,7 @@ fun GameScreenApp() {
 
 @Composable
 fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = viewModel()) {
-    val gameUiState by gameViewModel.uiState
+    val gameUiState = gameViewModel.uiState
 
     Column(
         modifier = modifier
@@ -186,9 +185,10 @@ fun GameLayout(
 
 @Composable
 private fun FinalScoreDialog(score: Int, onPlayAgain: () -> Unit, modifier: Modifier = Modifier) {
-    val activity = (LocalContext.current as Activity)
+    val activity = LocalActivity.current as Activity
 
-    AlertDialog(onDismissRequest = { },
+    AlertDialog(
+        onDismissRequest = { },
         title = { Text(text = stringResource(R.string.congratulations)) },
         text = { Text(text = stringResource(R.string.you_scored, score)) },
         modifier = modifier,

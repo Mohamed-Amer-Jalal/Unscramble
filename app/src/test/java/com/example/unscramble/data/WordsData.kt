@@ -18,10 +18,6 @@ val allWords: Set<String> =
         "cauliflower"
     )
 
-/**
- * Maps words to their lengths. Each word in allWords has a unique length. This is required since
- * the words are randomly picked inside GameViewModel and the selection is unpredictable.
- */
 private val wordLengthMap: Map<Int, String> = allWords.associateBy({ it.length }, { it })
 
 internal fun getUnscrambledWord(scrambledWord: String) = wordLengthMap[scrambledWord.length] ?: ""

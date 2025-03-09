@@ -19,12 +19,12 @@ class GameViewModelTest {
 
     @Test
     fun gameViewModel_CorrectWordGuessed_ScoreUpdatedAndErrorFlagUnset() {
-        var currentGameUiState = viewModel.uiState.value
+        var currentGameUiState = viewModel.uiState
         viewModel.apply {
             updateUserGuess(getUnscrambledWord(currentGameUiState.currentScrambledWord))
             checkUserGuess()
         }
-        currentGameUiState = viewModel.uiState.value
+        currentGameUiState = viewModel.uiState
         // Assert that checkUserGuess() method updates isGuessedWordWrong is updated correctly.
         assertFalse(currentGameUiState.isGuessedWordWrong)
         // Assert that score is updated correctly.
@@ -38,7 +38,7 @@ class GameViewModelTest {
             updateUserGuess("and")
             checkUserGuess()
         }
-        val currentGameUiState = viewModel.uiState.value
+        val currentGameUiState = viewModel.uiState
         // Assert that score is unchanged
         assertEquals(0, currentGameUiState.score)
         // Assert that checkUserGuess() method updates isGuessedWordWrong correctly
@@ -47,7 +47,7 @@ class GameViewModelTest {
 
     @Test
     fun gameViewModel_Initialization_FirstWordLoaded() {
-        val gameUiState = viewModel.uiState.value
+        val gameUiState = viewModel.uiState
         // Assert that current word is scrambled.
         assertNotEquals(
             getUnscrambledWord(gameUiState.currentScrambledWord),
@@ -66,7 +66,7 @@ class GameViewModelTest {
     @Test
     fun gameViewModel_AllWordsGuessed_UiStateUpdatedCorrectly() {
         var expectedScore = 0
-        var currentGameUiState = viewModel.uiState.value
+        var currentGameUiState = viewModel.uiState
         var correctPlayerWord = getUnscrambledWord(currentGameUiState.currentScrambledWord)
         repeat(MAX_NO_OF_WORDS) {
             expectedScore += SCORE_INCREASE
@@ -74,7 +74,7 @@ class GameViewModelTest {
                 updateUserGuess(correctPlayerWord)
                 checkUserGuess()
             }
-            currentGameUiState = viewModel.uiState.value
+            currentGameUiState = viewModel.uiState
             correctPlayerWord = getUnscrambledWord(currentGameUiState.currentScrambledWord)
             // Assert that after each correct answer, score is updated correctly.
             assertEquals(expectedScore, currentGameUiState.score)
@@ -87,14 +87,14 @@ class GameViewModelTest {
 
     @Test
     fun gameViewModel_WordSkipped_ScoreUnchangedAndWordCountIncreased() {
-        var currentGameUiState = viewModel.uiState.value
+        var currentGameUiState = viewModel.uiState
         viewModel.apply {
             updateUserGuess(getUnscrambledWord(currentGameUiState.currentScrambledWord))
             checkUserGuess()
         }
-        currentGameUiState = viewModel.uiState.value
+        currentGameUiState = viewModel.uiState
         viewModel.skipWord()
-        currentGameUiState = viewModel.uiState.value
+        currentGameUiState = viewModel.uiState
         // Assert that score remains unchanged after word is skipped.
         assertEquals(SCORE_AFTER_FIRST_CORRECT_ANSWER, currentGameUiState.score)
         // Assert that word count is increased by 1 after word is skipped.
